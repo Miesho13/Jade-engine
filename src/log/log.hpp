@@ -9,24 +9,38 @@
 
 #include <iostream>
 #include <string>
+#include <chrono>
+#include <source_location>
+#include <filesystem>
 
+#include "fmt/core.h"
 
 namespace JADE
 {
+
+
   class LOGGER
   {
-
     public:
-      static void print()
+      enum class LOG_LEVEL : char
       {
-        std::cout << '\n';
-      }
-      template<typename T1, typename ... T2>
-      static void print(const T1& t1, const T2 ...t2)
-      {
-        std::cout << t1;
-        print(t2...);
-      }
+        Info = 'I',
+        Warning = 'W',
+        Error = 'E'
+      };
+
+    private:
+      static auto as_local(std::chrono::system_clock::time_point const tp);
+      static std::string to_string(std::source_location const source);
+      static std::string to_string(auto tp);
+    public:
+
+      static void print(
+        LOG_LEVEL const level,
+        std::string_view const message,
+        std::source_location const source = std::source_location::current());
+
+      
   };
 }
 
