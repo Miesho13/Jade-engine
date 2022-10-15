@@ -6,14 +6,13 @@ std::string JADE::LOGGER::to_string(std::source_location const source)
   return fmt::format("{} : {} : {}", 
     std::filesystem::path(source.file_name()).filename().string(), 
     source.function_name(),
-    source.line());
+    fmt::styled(source.line(), fmt::fg(fmt::color::aqua)));
 }
 
 
 std::string JADE::LOGGER::to_string(auto tp)
 {
-  std::time_t now = std::chrono::system_clock::to_time_t(tp);
-  return fmt::format("{}", std::ctime(&now));
+  return fmt::format("{:%F %T %Z}", tp);
 }
 
 
@@ -22,10 +21,37 @@ void JADE::LOGGER::print(
   std::string_view const message,
   std::source_location const source)
 {
-  fmt::print(
-    "[{}] {} | {} | {}",
-    static_cast<char>(level),
-    JADE::LOGGER::to_string(source),
-    message,
-    JADE::LOGGER::to_string(std::chrono::system_clock::now()));
+  if (level == JADE::LOGGER::LOG_LEVEL::Info)
+  {
+    fmt::print(
+      "[{}] {} | {} | {}\n",
+      fmt::styled(static_cast<char>(level),fmt::fg(fmt::color::blue_violet) | fmt::emphasis::bold),
+      JADE::LOGGER::to_string(source),
+      JADE::LOGGER::to_string(std::chrono::system_clock::now()),
+      fmt::styled(message, fmt::fg(fmt::color::green)));
+
+    return;
+  }
+
+  else if (level == JADE::LOGGER::LOG_LEVEL::Warning)
+  {
+    fmt::print(
+      "[{}] {} | {} | {}\n",
+      fmt::styled(static_cast<char>(level),fmt::fg(fmt::color::yellow) | fmt::emphasis::bold),
+      JADE::LOGGER::to_string(source),
+      JADE::LOGGER::to_string(std::chrono::system_clock::now()),
+      fmt::styled(message, fmt::fg(fmt::color::green)));
+
+  }
+
+  else if (level == JADE::LOGGER::LOG_LEVEL::Error)
+  {
+    fmt::print(
+      "[{}] {} | {} | {}\n",
+      fmt::styled(static_cast<char>(level),fmt::fg(fmt::color::red) | fmt::emphasis::bold),
+      JADE::LOGGER::to_string(source),
+      JADE::LOGGER::to_string(std::chrono::system_clock::now()),
+      fmt::styled(message, fmt::fg(fmt::color::green)));
+
+  }
 }

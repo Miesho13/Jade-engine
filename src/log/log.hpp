@@ -14,6 +14,8 @@
 #include <filesystem>
 
 #include "fmt/core.h"
+#include "fmt/chrono.h"
+#include "fmt/color.h"
 
 namespace JADE
 {
@@ -29,10 +31,6 @@ namespace JADE
         Error = 'E'
       };
 
-    private:
-      static auto as_local(std::chrono::system_clock::time_point const tp);
-      static std::string to_string(std::source_location const source);
-      static std::string to_string(auto tp);
     public:
 
       static void print(
@@ -40,6 +38,10 @@ namespace JADE
         std::string_view const message,
         std::source_location const source = std::source_location::current());
 
+    private:
+      static auto as_local(std::chrono::system_clock::time_point const tp);
+      static std::string to_string(std::source_location const source);
+      static std::string to_string(auto tp);
       
   };
 }
