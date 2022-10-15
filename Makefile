@@ -1,33 +1,47 @@
 # PROJECT NAME
-PROJECTNAME=JADE
+PROJECTNAME=jade
 
-#PATH TO COMPILE
-BILDPATH=./bin/
+# INCLUDE PATH
+INCPATH = ./src
 
-#SRC PATH
-SRC=./src/
+# INCLUDE BIN PATH
+BIN = ./bin
 
-#OBJECT TO COMPILE
-ALLOBJ=""
+# PATH TO COMPILE
+MAIN_TEST = ./test/main_test.cc
+MAIN = ${INCPATH}/main/main.cc
+
+SRC_BIN_FILE  = ${INCPATH}/log/log.cc
+SRC_BIN_FILE += ${BIN}/libfmt.a
+
+
+INCLUDE = -I${INCPATH}/log
+
 
 # COMPILER
-GCC=/usr/bin/g++-10
-FLAGS=-Wall -Wextra -I "./src/"
+GCC=/usr/bin/g++-11
 
+# COMPILER FLAG
+FLAGS  = -Wall
+FLAGS += -Wextra
+FLAGS += -std=c++20
 
 # RM PATH
-rm=/bin/rm -r ./bin/*
+rm=/bin/rm -r bin/*
 
-all:
-	${GCC} main.cc ${ALLBOJ} ${FLAGS} -o ${BILDPATH}${PROJECTNAME}
+.PHONU: proj
 
-allobj:
-	${GCC} -c ${SRC}log/log.cc ${FLAGS} -o ${BILDPATH}log 
+all: proj
 
+proj:
+	${GCC} ${MAIN} ${SRC_BIN_FILE} -o ${BIN}/${PROJECTNAME}.elf ${FLAGS}
 
-clear:
+clean:
 	${rm}
 
 test:
-  ${GCC test/main_test.cc 
+	@echo "[make]: Run test...\n"
+	@${GCC} ${MAIN_TEST} ${SRC_BIN_FILE} -o ${BIN}/${PROJECTNAME}_test.elf ${INCLUDE} ${FLAGS}
+	@./bin/${PROJECTNAME}_test.elf
+
 	
